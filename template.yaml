@@ -1,0 +1,6 @@
+anusha_carolyn : # this will be the name of the generated file.
+        src_spk_name: "anusha" # This field is needed to match the interface. It is not really used.
+        ref_spk_name: "carolyn" # This field is needed to match the interface. It is not really used.
+        src: /home/ubuntu/quick_tests/anusha.wav # Note that absolute path is needed.
+        ref: # An average of d-vectors extracted with these speech files will be used. Note that absolute path is needed.
+                - /home/ubuntu/quick_tests/template-carolyn.wav

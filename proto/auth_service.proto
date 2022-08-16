@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package auth_service;
+
+service AuthService {
+    rpc check_token(CheckTokenRequest) returns (CheckTokenResponse) {}
+    rpc refresh_token(TokenRefreshRequest) returns (TokenRefreshResponse) {}
+}
+
+message CheckTokenRequest {
+    string user_id = 1;
+    string access_token = 2;
+}
+
+message CheckTokenResponse {
+    string status = 1;
+}
+
+message TokenRefreshRequest {
+    string user_id = 1;
+    string refresh_token = 2;
+}
+
+message TokenRefreshResponse {
+    string status = 1;
+    string access_token = 2;
+}

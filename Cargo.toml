@@ -1,0 +1,54 @@
+[package]
+name = "voice_generation"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "voice_generation"
+path = "src/lib.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+sqlx = { version = "0.5", features = ["chrono","macros", "runtime-tokio-rustls", "postgres", "uuid", "time", "bigdecimal", "offline" ] }
+axum-server = "0.4.0"
+rdkafka = { version = "0.28.0" }
+axum = {version="0.5",features=["ws","headers","multipart"]}
+axum-macros = "0.1.0"
+tokio = { version = "1.16.1", features = ["full"] }
+anyhow = "1.0.53"
+tower = {version = "0.4.11",features=["full"]}
+tower-http = { version = "0.2.2", features = ["fs", "trace", "set-header","cors"] }
+serde = { version = "1.0.136", features = ["derive"] }
+serde_json = "1.0.78"
+futures-util = "0.3.17"
+uuid = { version = "0.8", features = ["serde", "v4"] }
+jsonwebtoken = "7.2.0"
+dotenv = "0.15.0"
+lazy_static = "1.4"
+derive_more = "0.99.17"
+chrono = { version = "0.4", features = ["serde", "rustc-serialize"] }
+
+tonic = { version = "0.5", features = ["tls", "tls-roots", "prost"] }
+pin-project = "1"
+prost = "0.8"
+
+parking_lot = "0.11.1"
+dashmap = "4.0.2"
+aper = "0.0.2"
+csv = "1.1"
+
+hound = "3.4.0"
+futures = "0.3"
+base64 = "0.13.0"
+
+reqwest = { version = "0.11.6", features = ['multipart', "blocking"] }
+
+rusoto_core = "0.47"
+rusoto_s3 = "0.47"
+rusoto_credential = "0.47"
+
+serde_yaml = "0.8"
+
+[build-dependencies]
+tonic-build = { version = "0.5", features = ["prost"] }
