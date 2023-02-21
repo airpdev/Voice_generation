@@ -1,0 +1,84 @@
+syntax = "proto3";
+
+package user_service;
+
+service UserService {
+    rpc pre_create_user(CreateUserRequest) returns (CreateUserResponse) {}
+    rpc check_user(CheckUserRequest) returns (CheckUserResponse) {}
+    rpc add_workspace_id(AddWorkspaceRequest) returns (AddWorkspaceResponse) {}
+    rpc remove_workspace_id(RemoveWorkspaceRequest) returns (RemoveWorkspaceResponse) {}
+    rpc get_user_quota(UserQuotaRequest) returns (UserQuotaResponse) {}
+    rpc set_not_binded_videos(UserQuotaNotBinded) returns (UserQuotaUpdateResponse) {}
+    rpc increase_videos_used(UserQuotaUpdate) returns (UserQuotaUpdateResponse) {}
+    rpc decrease_videos_used(UserQuotaUpdate) returns (UserQuotaUpdateResponse) {}
+    rpc stripe_usage_records(StripeUsageRecordReuqest) returns (StripeUsageRecordResponse) {}
+}
+
+message CreateUserRequest {
+    string user_id = 1;
+    string email = 2;
+}
+
+message CreateUserResponse {
+    string status = 1;
+}
+
+message CheckUserRequest {
+    string user_id = 1;
+}
+
+message CheckUserResponse {
+    bool user_exists = 1;
+}
+
+message AddWorkspaceRequest {
+    string user_id = 1;
+    string workspace_id = 2;
+}
+
+message AddWorkspaceResponse {
+    string status = 1;
+}
+
+message RemoveWorkspaceRequest {
+    string user_id = 1;
+    string workspace_id = 2;
+}
+
+message RemoveWorkspaceResponse {
+    string status = 1;
+}
+
+message UserQuotaRequest {
+    string user_id = 1;
+}
+
+message UserQuotaResponse {
+    string status = 1;
+    int64 generated_videos_quota = 2;
+    int64 generated_videos_used = 3;
+    int64 not_binded_videos = 4;
+}
+
+message UserQuotaNotBinded {
+    string user_id = 1;
+    int64 not_binded_videos = 2;
+}
+
+message UserQuotaUpdate {
+    string user_id = 1;
+    int64 generated_videos_used = 2;
+}
+
+message UserQuotaUpdateResponse {
+    string status = 1;
+}
+
+message StripeUsageRecordReuqest {
+    string user_id = 1;
+    int64 number_of_succ_vid = 2;
+}
+
+message StripeUsageRecordResponse {
+    string status = 1;
+}

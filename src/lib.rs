@@ -1,12 +1,15 @@
 use axum::{
-    extract::Extension,
+    extract::{
+        Extension, 
+    },
     routing::{get, post},
     Router,
 };
+
 use dotenv::dotenv;
-use rdkafka::consumer::{CommitMode, Consumer};
 use sqlx::PgPool;
-use std::{env, ffi::OsStr, net::SocketAddr, sync::Arc, time::Duration};
+use sqlx::postgres::PgPoolOptions;
+use std::{env, ffi::OsStr, sync::Arc, time::Duration};
 use tokio::time::{self};
 use tower::{limit::ConcurrencyLimitLayer, ServiceBuilder};
 use tower_http::{
@@ -19,18 +22,38 @@ pub mod handlers;
 pub mod models;
 pub mod utils;
 
-use crate::error_404::error_404::error_404;
 use crate::handlers::voice_generation_handler::{
     generate, 
 };
 use crate::handlers::voice_spreadsheet_handler::{
-    generate_audio, 
+    generate_audio, process_audio, detect_pauses
+};
+use crate::handlers::voice_extracts_handler::{
+    extract_audio_transcripts, extract_transcripts_csv
+};
+use crate::handlers::voice_train_handler::{
+    prepare_voice_data
+};
+use crate::handlers::video_lipsync_handler::{
+    generate_video_lipsync
+};
+use crate::handlers::voice_huggingface_handler::{
+    generate_audio_huggingface//, transfer_prosody
+};
+use crate::handlers::voice_mturk_handler::{
+    fetch_mturk_data, process_mturk_data, upload_mturk_s3, login_mturk, signup_mturk, get_mturk_user, set_paypal, set_payment, fetch_users_info
 };
 use crate::utils::download_audio::{
-    download_s3_names, clean_audio_db
+    download_s3_names, clean_audio_db, voice_code, generate_folder_code, remove_folder_code, get_removed_names, detect_special_audios, detect_one_audio
 };
 use crate::models::ws_types::ServerState;
-use crate::utils::consumer::get_consumer;
+
+use microservice_utils::{
+    server::{
+        producer::get_producer, 
+        error_404::error_404, 
+    },
+};
 
 #[macro_use]
 extern crate lazy_static;
@@ -41,14 +64,22 @@ fn ensure_var<K: AsRef<OsStr>>(key: K) -> anyhow::Result<String> {
 
 lazy_static! {
     static ref DATABASE_URL: String = ensure_var("DATABASE_URL").unwrap();
+    static ref KAFKA_URL: String = ensure_var("KAFKA_URL").unwrap();
 }
 
 #[tokio::main]
 pub async fn main() {
     dotenv().expect("Failed to read .env file");
     lazy_static::initialize(&DATABASE_URL);
+    lazy_static::initialize(&KAFKA_URL);    
 
-    let pool = PgPool::connect(&std::env::var("DATABASE_URL").unwrap())
+    // let pool = PgPool::connect(&std::env::var("DATABASE_URL").unwrap())
+    //     .await
+    //     .unwrap();
+
+    let pool = PgPoolOptions::new()
+        .max_connections(10)
+        .connect(&DATABASE_URL)    
         .await
         .unwrap();
 
@@ -57,24 +88,27 @@ pub async fn main() {
     // let pool_arc = Arc::new(pool.clone());
     // let _result = download_s3_names(pool_arc).await;
 
-    let pool_arc = Arc::new(pool.clone());
-    let _result = clean_audio_db(pool_arc).await;
-
-    start_consumer();
-
+    // let pool_arc = Arc::new(pool.clone());
+    // let _result = generate_folder_code(pool_arc).await;
     
-    // axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
-    // .serve(axum_make_service.into_make_service())
-    // .await
-    // .unwrap(); 
+    // let path = "test/768b35b7-93a1-4956-abb0-1ee9628c02cf.wav".to_string();
+    // detect_one_audio(&path);
 
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
-    println!("Listening on http://{}", addr);
+    // let _clients: HashMap<String, Client> = HashMap::new();    
+    // let clients = Arc::new(Mutex::new(_clients));
+    
+    axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
+    .serve(axum_make_service.into_make_service())
+    .await
+    .unwrap(); 
 
-    axum_server::bind(addr)
-        .serve(axum_make_service.into_make_service())
-        .await
-        .unwrap();
+    // let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+    // println!("Listening on http://{}", addr);
+
+    // axum_server::bind(addr)
+    //     .serve(axum_make_service.into_make_service())
+    //     .await
+    //     .unwrap();
 
 }
 
@@ -92,6 +126,8 @@ fn create_app(pool: &PgPool) -> Router {
     tokio::spawn(cleaner(state.clone(), 1));
 
     let pool_arc = Arc::new(pool.clone());
+
+    let producer = Arc::new(get_producer(&KAFKA_URL));
 
     let cors = CorsLayer::new()
         .allow_methods(Any)
@@ -118,42 +154,91 @@ fn create_app(pool: &PgPool) -> Router {
             "/generate_audio",
             post(generate_audio),
         )
-        // .route("/", get(hello_world))
+        .route(
+            "/generate_audio_huggingface",
+            post(generate_audio_huggingface),
+        )
+        .route(
+            "/voice_code",
+            post(voice_code),
+        )
+        .route(
+            "/get_removed_names",
+            get(get_removed_names),
+        )
+        .route(
+            "/process_audio",
+            post(process_audio),
+        )
+        .route(
+            "/detect_pauses",
+            post(detect_pauses),
+        )
+        .route(
+            "/fetch_mturk_data",
+            post(fetch_mturk_data),
+        )
+        .route(
+            "/process_mturk_data",
+            post(process_mturk_data),
+        )
+        .route(
+            "/upload_mturk_s3",
+            post(upload_mturk_s3),
+        )
+        .route(
+            "/extract_audio_transcripts",
+            post(extract_audio_transcripts),
+        )
+        .route(
+            "/extract_transcripts_csv",
+            post(extract_transcripts_csv),
+        )
+        .route(
+            "/login_mturk",
+            post(login_mturk),
+        )
+        .route(
+            "/signup_mturk",
+            post(signup_mturk),
+        )
+        .route(
+            "/get_mturk_user",
+            post(get_mturk_user),
+        ).route(
+            "/set_paypal",
+            post(set_paypal),
+        ).route(
+            "/set_payment",
+            post(set_payment),
+        ).route(
+            "/fetch_users_info",
+            post(fetch_users_info),
+        )
+        // .route(
+        //     "/transfer_prosody",
+        //     post(transfer_prosody),
+        // )
+        .route(
+            "/generate_video_lipsync",
+            post(generate_video_lipsync),
+        )
+        .route(
+            "/prepare_voice_data",
+            post(prepare_voice_data),
+        )
+        .route("/detect_scan", get(detect_scan))
         .fallback(get(error_404))
         .layer(Extension(state))
         .layer(Extension(pool_arc))
+        .layer(Extension(producer))
         .layer(middleware_stack);
 
     return app;
 }
 
-// async fn hello_world() -> String {
-//     "Hello World".to_owned()
-// }
-
-fn start_consumer() {
-    tokio::spawn(async move {
-        let consumer = Arc::new(get_consumer("127.0.0.1:9092", "1234", &["bhuman_channel"]));
-        loop {
-            match consumer.recv().await {
-                Err(e) => println!("Kafka error: {}", e),
-                Ok(m) => {
-                    let payload_s = match rdkafka::Message::payload_view::<str>(&m) {
-                        None => "".to_string(),
-                        Some(Ok(s)) => s.to_string(),
-                        Some(Err(e)) => {
-                            println!("Error while deserializing message payload: {:?}", e);
-                            "".to_string()
-                        }
-                    };
-
-                    println!("Received Message: {}", payload_s);
-
-                    consumer.commit_message(&m, CommitMode::Async).unwrap();
-                }
-            }
-        }
-    });
+async fn detect_scan() {
+    let _res = detect_special_audios().await;
 }
 
 const HOUR: Duration = Duration::from_secs(3600);
@@ -168,7 +253,6 @@ async fn cleaner(state: ServerState, expiry_days: u32) {
                 keys.push(entry.key().clone());
             }
         }
-        println!("cleaner removing keys: {:?}", keys);
         for key in keys {
             state.documents.remove(&key);
         }

@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package ai_studio_service;
+
+service AiStudioService {
+    rpc create_folder(FolderCreateRequest) returns (FolderCreateResponse) {}
+    rpc create_v_instance(VideoInstanceCreateRequest) returns (VideoInstanceCreateResponse) {}
+    rpc create_actor(CreateActorRequest) returns (CreateActorResponse) {}
+    rpc generated_usage(GeneratedUsageRequest) returns (GeneratedUsageResponse) {}
+}
+
+message FolderCreateRequest {
+    string user_id = 1;
+    string workspace_id = 2;
+    string name = 3;
+}
+
+message FolderCreateResponse {
+    string id = 1;
+    string user_id = 2;
+    string workspace_id = 3;
+    string name = 4;
+    int64 parent_videos = 5;
+    int64 generated_videos = 6;
+}
+
+message VideoInstanceCreateRequest {
+    string user_id = 1;
+    string folder_id = 2;
+    string actor_id = 3;
+    string name = 4;
+}
+
+message VideoInstanceCreateResponse {
+    string id = 1;
+    string user_id = 2;
+    string folder_id = 3;
+    string actor_id = 4;
+    string name = 5;
+}
+
+message CreateActorRequest {
+    string user_id = 1;
+    string name = 2;
+}
+
+message CreateActorResponse {
+    string id = 1;
+    string user_id = 2;
+    string name = 3;
+}
+
+message GeneratedUsageRequest {
+    string from = 1;
+    string to = 2;
+}
+
+message UserIds {
+    repeated string user_ids = 1;
+}
+
+message GeneratedUsageResponse {
+    int64 total = 1;    
+    map<string, UserIds> usage = 2;
+}

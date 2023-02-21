@@ -14,15 +14,15 @@ pub type LoggingConsumer = StreamConsumer<CustomContext>;
 
 impl ConsumerContext for CustomContext {
     fn pre_rebalance(&self, rebalance: &Rebalance) {
-        println!("Pre rebalance {:?}", rebalance);
+        tracing::info!("Pre rebalance {:?}", rebalance);
     }
 
     fn post_rebalance(&self, rebalance: &Rebalance) {
-        println!("Post rebalance {:?}", rebalance);
+        tracing::info!("Post rebalance {:?}", rebalance);
     }
 
     fn commit_callback(&self, result: KafkaResult<()>, _offsets: &TopicPartitionList) {
-        println!("Committing offsets: {:?}", result);
+        tracing::info!("Committing offsets: {:?}", result);
     }
 }
 

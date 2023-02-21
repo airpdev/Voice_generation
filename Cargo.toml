@@ -1,6 +1,6 @@
 [package]
 name = "voice_generation"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 
 [[bin]]
@@ -10,11 +10,11 @@ path = "src/lib.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-sqlx = { version = "0.5", features = ["chrono","macros", "runtime-tokio-rustls", "postgres", "uuid", "time", "bigdecimal", "offline" ] }
-axum-server = "0.4.0"
+sqlx = { version = "0.5", features = ["chrono","macros", "postgres", "uuid", "time", "bigdecimal", "offline" ] }
 rdkafka = { version = "0.28.0" }
-axum = {version="0.5",features=["ws","headers","multipart"]}
+axum-server = "0.4.0"
 axum-macros = "0.1.0"
+axum = {version="0.5",features=["ws","headers","multipart"]}
 tokio = { version = "1.16.1", features = ["full"] }
 anyhow = "1.0.53"
 tower = {version = "0.4.11",features=["full"]}
@@ -42,13 +42,26 @@ hound = "3.4.0"
 futures = "0.3"
 base64 = "0.13.0"
 
-reqwest = { version = "0.11.6", features = ['multipart', "blocking"] }
+reqwest = { version = "0.11.6", features = ['multipart', "blocking", "stream"] }
 
 rusoto_core = "0.47"
 rusoto_s3 = "0.47"
 rusoto_credential = "0.47"
 
 serde_yaml = "0.8"
+schemars = { version = "0.8" }
+
+headers = "0.3.7"
+okapi = { version = "0.7.0-rc.1"}
+
+openapi-rs = {git = "https://github.com/bhuman-ai/openapi-rs"}
+microservice_utils = {path = "./microservice_utils"}
+
+tasque = "0.1.5"
+async-std = { version = "1", features = ["attributes", "tokio1"] }
+
+walkdir = "2"
+google-cloud-storage = "0.8.0"
 
 [build-dependencies]
 tonic-build = { version = "0.5", features = ["prost"] }

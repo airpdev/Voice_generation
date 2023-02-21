@@ -1,0 +1,42 @@
+[package]
+name = "microservice_utils"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rdkafka = { version = "0.28.0" }
+axum-server = "0.4.0"
+axum = {version="0.5",features=["ws","headers"]}
+axum-macros = "0.2.2"
+headers = "0.3.7"
+anyhow = "1.0.53"
+sqlx = { version = "0.5", features = ["chrono", "macros", "postgres","runtime-tokio-native-tls", "uuid", "time", "bigdecimal", "offline"] }
+schemars = { version = "0.8" }
+uuid = { version = "0.8", features = ["serde", "v4"] }
+reqwest = { version = "0.11.6", default-features = false, features = ["rustls-tls", "json"] }
+thiserror = "1"
+jsonwebtoken = "7.2.0"
+tower = {version = "0.4.11",features=["full"]}
+okapi = { version = "0.7.0-rc.1"}
+openapi-rs = {git = "https://github.com/bhuman-ai/openapi-rs"}
+bhuman_micros = { path = "bhuman_micros" }
+serde = {version = "1", features = ["derive"]}
+serde_json = { version = "1.0", default-features = false, features = ["alloc"] }
+tower-http = { version = "0.2.2", features = ["fs", "trace", "set-header","cors"] }
+tower-service = "0.3"
+chrono = { version = "0.4", features = ["serde", "rustc-serialize"] }
+http = "0.2"
+tonic = { version = "0.5", features = ["tls", "tls-roots", "prost"] }
+pin-project = "1"
+prost = "0.8.0"
+prost-types = "0.8.0"
+dotenv = "0.15.0"
+lazy_static = "1.4"
+
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
+[build-dependencies]
+tonic-build = { version = "0.5", features = ["prost"] }

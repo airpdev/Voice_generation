@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package auth_service;
+
+service AuthService {
+    rpc check_token(CheckTokenRequest) returns (CheckTokenResponse) {}
+    rpc refresh_token(TokenRefreshRequest) returns (TokenRefreshResponse) {}
+    rpc get_shopify_token(CheckShopifyToken) returns (ShopifyTokenResponse) {}
+    rpc get_hubspot_token(CheckHubspotToken) returns (HubspotTokenResponse) {}
+    rpc get_auth_provider(AuthProviderRequest) returns (AuthProviderResponse) {}
+    rpc get_klaviyo_auth(KlaviyoAuthRequest) returns (KlaviyoAuthResponse) {}
+}
+
+message CheckTokenRequest {
+    string user_id = 1;
+    string access_token = 2;
+}
+
+message CheckTokenResponse {
+    string status = 1;
+    string role = 2;
+}
+
+message TokenRefreshRequest {
+    string user_id = 1;
+    string refresh_token = 2;
+}
+
+message TokenRefreshResponse {
+    string status = 1;
+    string access_token = 2;
+}
+
+message CheckShopifyToken {
+    string user_id = 1;
+}
+
+message ShopifyTokenResponse {
+    string status = 1;
+    string token = 2;
+}
+
+message CheckHubspotToken {
+    string user_id = 1;
+}
+
+message HubspotTokenResponse {
+    string status = 1;
+    string access_token = 2;
+}
+
+message AuthProviderRequest {
+    string user_id = 1;
+}
+
+message AuthProviderResponse {
+    repeated string providers = 1;
+}
+
+message KlaviyoAuthRequest {
+    string user_id = 1;
+}
+
+message KlaviyoAuthResponse {
+    string private_key = 1;
+}

@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package workspace_service;
+
+service WorkspaceService {
+    rpc create_workspace(WorkspaceCreateRequest) returns (WorkspaceCreateResponse) {}
+    rpc check_workspace(WorkspaceInfo) returns (WorkspaceStatus) {}
+    rpc get_workspace_quota(WorkspaceQuotaRequest) returns (WorkspaceQuotaResponse) {}
+    rpc update_workspace_quota_by_user(UpdateWorkspaceQuotaByUser) returns (WorkspaceStatus) {}
+    rpc increase_workspace_quota_by_user(UpdateWorkspaceQuotaByUser) returns (WorkspaceStatus) {}
+    rpc increase_videos_used(UpdateWorkspaceQuota) returns (UpdateWorkspaceQuotaResponse) {}
+    rpc decrease_videos_used(UpdateWorkspaceQuota) returns (UpdateWorkspaceQuotaResponse) {}
+}
+
+message WorkspaceCreateRequest {
+    string user_id = 1;
+    string name = 2;
+    string role = 3; // workspace role, owner, editor, viewer, guest
+    string description = 4;
+    int64 parent_videos_quota = 5;
+    int64 generated_videos_quota = 6;
+}
+
+message WorkspaceCreateResponse {
+    int64 id = 1;
+    string workspace_id = 2;
+    string user_id = 3;
+    string name = 4;
+    string role = 5;
+    string description = 6;
+}
+
+message WorkspaceInfo {
+    string user_id = 1;
+    string workspace_id = 2;
+}
+
+message WorkspaceStatus {
+    string status = 1;
+}
+
+message UpdateWorkspaceQuotaByUser {
+    string user_id = 1;
+    int64 generated_videos_quota = 2;
+    int64 generated_videos_used = 3;
+}
+
+message UpdateWorkspaceQuota {
+    string workspace_id = 1;
+    int64 generated_videos_used = 2;
+}
+
+message UpdateWorkspaceQuotaResponse {
+    string status = 1;
+}
+
+message WorkspaceQuotaRequest {
+    string workspace_id = 1;
+}
+
+message WorkspaceQuotaResponse {
+    string status = 1;
+    int64 generated_videos_quota = 2;
+    int64 generated_videos_used = 3;
+}

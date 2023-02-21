@@ -52,7 +52,7 @@ pub async fn generate(
         let bytes = field.bytes().await.unwrap().to_vec().clone();    
         let mut reader: &[u8] = &bytes;
         // Create a file 
-        let mut out = File::create(audio_path.clone()).expect("failed to create file");
+        let mut out = File::create(&audio_path).expect("failed to create file");
         //Copy data to the file
         io::copy(&mut reader, &mut out).expect("failed to copy content");
 
@@ -62,18 +62,15 @@ pub async fn generate(
         println!("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
         // convert any audio format to .wav format using ffmpeg
-        convert_to_wav(audio_path.clone());
+        convert_to_wav(&audio_path);
 
         // denoise
-        denoise_audio(audio_path.clone());
+        denoise_audio(&audio_path);
 
         // remove silences
-        match remove_silence_audio(audio_path.clone()) {
-            Ok(wav_path) => println!("finished removing silences : {}", wav_path),
-            Err(_) => println!("failed to remove noises of {}", audio_path.clone()),
-        }
+        remove_silence_audio(&audio_path);
 
-        let voice_code_path = generate_voice_code(audio_path.clone());
+        let voice_code_path = generate_voice_code(&audio_path);
 
         //get similar names from database
         let i = &*pool;
@@ -88,10 +85,10 @@ pub async fn generate(
 
             for item in name_records.iter() {
                 let voice_path = item.voice_code.clone();
-                if !path_exists(&*voice_path){
+                if !path_exists(&*voice_path) {
                     continue;
                 }
-                let similarity_value = similarity_voice_code(voice_code_path.clone(), item.voice_code.clone()).unwrap();
+                let similarity_value = similarity_voice_code(&voice_code_path, &item.voice_code).unwrap();
                 if similarity_value > threshold {
                     threshold = similarity_value;
                     vst_file_path = item.file_path.clone();
@@ -101,15 +98,15 @@ pub async fn generate(
             println!("similarity_value : {} ---> {}", vst_file_path, threshold);
             
             if threshold > 0.6 {
-                let yaml_path = generate_yaml(vst_file_path.clone(), file_path.clone(), target_path.clone()).unwrap();
-                launch_inference_audio(yaml_path.clone());
-                launch_normalizing_audio(yaml_path.clone());
+                let yaml_path = generate_yaml(&vst_file_path, &file_path, &target_path).unwrap();
+                launch_inference_audio(&yaml_path);
+                launch_normalizing_audio(&yaml_path);
                 //vst_generate_audio(yaml_path.clone());
 
                 let _res = std::fs::remove_file(format!("VST/{}.yaml", target_path));
                 target_path = format!("VST/custom_test/{}_gen.wav", target_path);
        
-                let file = File::open(target_path.clone());
+                let file = File::open(&target_path);
                 let mut file = match file{
                     Ok(file) => file,
                     Err(error) => panic!("Problem opening the file: {:?}", error),

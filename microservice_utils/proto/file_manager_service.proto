@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package file_manager_service;
+
+service FileManagerService {
+    rpc get_video(GetVideoRequest) returns (GetVideoResponse) {}
+}
+
+message GetVideoRequest {
+    string user_id = 1;
+    string video_id = 2;
+}
+
+message GetVideoResponse {
+    string id = 1;
+    string user_id = 2;
+    string name = 3;
+    string url = 4;
+}

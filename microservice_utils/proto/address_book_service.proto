@@ -1,0 +1,479 @@
+syntax = "proto3";
+
+package address_book_service;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+
+service AddressBookService {
+    rpc push_shopify_order(ShopifyOrder) returns (ShopifyResponse) {}
+    rpc request_shopify_data(ShopifyDataRequest) returns (ShopifyDataResponse) {}
+    rpc redact_shopify_orders(ShopifyOrdersRedact) returns (ShopifyResponse) {}
+}
+
+message ShopifyOrder {
+    message Shop_money {
+        string amount = 1;
+        string currency_code = 2;
+    }
+
+    message Presentment_money {
+        string amount = 1;
+        string currency_code = 2;
+    }
+
+    message Current_subtotal_price_set {
+        Shop_money shop_money = 1;
+        Presentment_money presentment_money = 2;
+    }
+
+    message Shop_money1 {
+        string amount = 1;
+        string currency_code = 2;
+    }
+
+    message Presentment_money1 {
+        string amount = 1;
+        string currency_code = 2;
+    }
+
+    message Current_total_discounts_set {
+        Shop_money1 shop_money = 1;
+        Presentment_money1 presentment_money = 2;
+    }
+
+    message Shop_money2 {
+        string amount = 1;
+        string currency_code = 2;
+    }
+
+    message Presentment_money2 {
+        string amount = 1;
+        string currency_code = 2;
+    }
+
+    message Current_total_price_set {
+        Shop_money2 shop_money = 1;
+        Presentment_money2 presentment_money = 2;
+    }
+
+    message Shop_money3 {
+        string amount = 1;
+        string currency_code = 2;
+    }
+
+    message Presentment_money3 {
+        string amount = 1;
+        string currency_code = 2;
+    }
+
+    message Current_total_tax_set {
+        Shop_money3 shop_money = 1;
+        Presentment_money3 presentment_money = 2;
+    }
+
+    message Shop_money4 {
+        string amount = 1;
+        string currency_code = 2;
+    }
+
+    message Presentment_money4 {
+        string amount = 1;
+        string currency_code = 2;
+    }
+
+    message Subtotal_price_set {
+        Shop_money4 shop_money = 1;
+        Presentment_money4 presentment_money = 2;
+    }
+
+    message Shop_money5 {
+        string amount = 1;
+        string currency_code = 2;
+    }
+
+    message Presentment_money5 {
+        string amount = 1;
+        string currency_code = 2;
+    }
+
+    message Total_discounts_set {
+        Shop_money5 shop_money = 1;
+        Presentment_money5 presentment_money = 2;
+    }
+
+    message Shop_money6 {
+        string amount = 1;
+        string currency_code = 2;
+    }
+
+    message Presentment_money6 {
+        string amount = 1;
+        string currency_code = 2;
+    }
+
+    message Total_line_items_price_set {
+        Shop_money6 shop_money = 1;
+        Presentment_money6 presentment_money = 2;
+    }
+
+    message Shop_money7 {
+        string amount = 1;
+        string currency_code = 2;
+    }
+
+    message Presentment_money7 {
+        string amount = 1;
+        string currency_code = 2;
+    }
+
+    message Total_price_set {
+        Shop_money7 shop_money = 1;
+        Presentment_money7 presentment_money = 2;
+    }
+
+    message Shop_money8 {
+        string amount = 1;
+        string currency_code = 2;
+    }
+
+    message Presentment_money8 {
+        string amount = 1;
+        string currency_code = 2;
+    }
+
+    message Total_shipping_price_set {
+        Shop_money8 shop_money = 1;
+        Presentment_money8 presentment_money = 2;
+    }
+
+    message Shop_money9 {
+        string amount = 1;
+        string currency_code = 2;
+    }
+
+    message Presentment_money9 {
+        string amount = 1;
+        string currency_code = 2;
+    }
+
+    message Total_tax_set {
+        Shop_money9 shop_money = 1;
+        Presentment_money9 presentment_money = 2;
+    }
+
+    message Email_marketing_consent {
+        string state = 1;
+        string opt_in_level = 2;
+        google.protobuf.Any consent_updated_at = 3;
+        google.protobuf.Any consent_collected_from = 4;
+    }
+
+    message Sms_marketing_consent {
+        string state = 1;
+        string opt_in_level = 2;
+        google.protobuf.Any consent_updated_at = 3;
+        string consent_collected_from = 4;
+    }
+
+    message Default_address {
+        int64 id = 1;
+        int64 customer_id = 2;
+        string first_name = 3;
+        string last_name = 4;
+        google.protobuf.Any company = 5;
+        string address1 = 6;
+        google.protobuf.Any address2 = 7;
+        string city = 8;
+        string province = 9;
+        string country = 10;
+        string zip = 11;
+        string phone = 12;
+        string name = 13;
+        string province_code = 14;
+        string country_code = 15;
+        string country_name = 16;
+        bool default = 17;
+    }
+
+    message Customer {
+        int64 id = 1;
+        string email = 2;
+        bool accepts_marketing = 3;
+        google.protobuf.Timestamp created_at = 4;
+        google.protobuf.Timestamp updated_at = 5;
+        string first_name = 6;
+        string last_name = 7;
+        int64 orders_count = 8;
+        string state = 9;
+        string total_spent = 10;
+        int64 last_order_id = 11;
+        string note = 12;
+        bool verified_email = 13;
+        google.protobuf.Any multipass_identifier = 14;
+        bool tax_exempt = 15;
+        string phone = 16;
+        string tags = 17;
+        string last_order_name = 18;
+        string currency = 19;
+        google.protobuf.Timestamp accepts_marketing_updated_at = 20;
+        google.protobuf.Any marketing_opt_in_level = 21;
+        repeated google.protobuf.Any tax_exemptions = 22;
+        Email_marketing_consent email_marketing_consent = 23;
+        Sms_marketing_consent sms_marketing_consent = 24;
+        string admin_graphql_api_id = 25;
+        Default_address default_address = 26;
+    }
+
+    message Shop_money10 {
+        string amount = 1;
+        string currency_code = 2;
+    }
+
+    message Presentment_money10 {
+        string amount = 1;
+        string currency_code = 2;
+    }
+
+    message Price_set {
+        Shop_money10 shop_money = 1;
+        Presentment_money10 presentment_money = 2;
+    }
+
+    message Shop_money11 {
+        string amount = 1;
+        string currency_code = 2;
+    }
+
+    message Presentment_money11 {
+        string amount = 1;
+        string currency_code = 2;
+    }
+
+    message Total_discount_set {
+        Shop_money11 shop_money = 1;
+        Presentment_money11 presentment_money = 2;
+    }
+
+    message Line_items {
+        int64 id = 1;
+        string admin_graphql_api_id = 2;
+        uint32 fulfillable_quantity = 3;
+        string fulfillment_service = 4;
+        google.protobuf.Any fulfillment_status = 5;
+        bool gift_card = 6;
+        uint32 grams = 7;
+        string name = 8;
+        string price = 9;
+        Price_set price_set = 10;
+        bool product_exists = 11;
+        google.protobuf.Any product_id = 12;
+        repeated google.protobuf.Any properties = 13;
+        uint32 quantity = 14;
+        bool requires_shipping = 15;
+        google.protobuf.Any sku = 16;
+        bool taxable = 17;
+        string title = 18;
+        string total_discount = 19;
+        Total_discount_set total_discount_set = 20;
+        google.protobuf.Any variant_id = 21;
+        google.protobuf.Any variant_inventory_management = 22;
+        google.protobuf.Any variant_title = 23;
+        google.protobuf.Any vendor = 24;
+        repeated google.protobuf.Any tax_lines = 25;
+        repeated google.protobuf.Any duties = 26;
+        repeated google.protobuf.Any discount_allocations = 27;
+    }
+
+    string user_id = 1;
+    int64 id = 2;
+    string admin_graphql_api_id = 3;
+    int64 app_id = 4;
+    google.protobuf.Any browser_ip = 5;
+    bool buyer_accepts_marketing = 6;
+    google.protobuf.Any cancel_reason = 7;
+    google.protobuf.Any cancelled_at = 8;
+    google.protobuf.Any cart_token = 9;
+    google.protobuf.Any checkout_id = 10;
+    google.protobuf.Any checkout_token = 11;
+    google.protobuf.Any closed_at = 12;
+    bool confirmed = 13;
+    string contact_email = 14;
+    google.protobuf.Timestamp created_at = 15;
+    string currency = 16;
+    string current_subtotal_price = 17;
+    Current_subtotal_price_set current_subtotal_price_set = 18;
+    string current_total_discounts = 19;
+    Current_total_discounts_set current_total_discounts_set = 20;
+    google.protobuf.Any current_total_duties_set = 21;
+    string current_total_price = 22;
+    Current_total_price_set current_total_price_set = 23;
+    string current_total_tax = 24;
+    Current_total_tax_set current_total_tax_set = 25;
+    google.protobuf.Any customer_locale = 26;
+    google.protobuf.Any device_id = 27;
+    repeated google.protobuf.Any discount_codes = 28;
+    string email = 29;
+    bool estimated_taxes = 30;
+    string financial_status = 31;
+    google.protobuf.Any fulfillment_status = 32;
+    string gateway = 33;
+    google.protobuf.Any landing_site = 34;
+    google.protobuf.Any landing_site_ref = 35;
+    google.protobuf.Any location_id = 36;
+    string name = 37;
+    string note = 38;
+    repeated google.protobuf.Any note_attributes = 39;
+    int64 number = 40;
+    int64 order_number = 41;
+    string order_status_url = 42;
+    google.protobuf.Any original_total_duties_set = 43;
+    repeated google.protobuf.Any payment_gateway_names = 44;
+    string phone = 45;
+    string presentment_currency = 46;
+    google.protobuf.Timestamp processed_at = 47;
+    string processing_method = 48;
+    google.protobuf.Any reference = 49;
+    google.protobuf.Any referring_site = 50;
+    google.protobuf.Any source_identifier = 51;
+    string source_name = 52;
+    google.protobuf.Any source_url = 53;
+    string subtotal_price = 54;
+    Subtotal_price_set subtotal_price_set = 55;
+    string tags = 56;
+    repeated google.protobuf.Any tax_lines = 57;
+    bool taxes_included = 58;
+    bool test = 59;
+    string token = 60;
+    string total_discounts = 61;
+    Total_discounts_set total_discounts_set = 62;
+    string total_line_items_price = 63;
+    Total_line_items_price_set total_line_items_price_set = 64;
+    string total_outstanding = 65;
+    string total_price = 66;
+    Total_price_set total_price_set = 67;
+    string total_price_usd = 68;
+    Total_shipping_price_set total_shipping_price_set = 69;
+    string total_tax = 70;
+    Total_tax_set total_tax_set = 71;
+    string total_tip_received = 72;
+    int64 total_weight = 73;
+    google.protobuf.Timestamp updated_at = 74;
+    int64 order_user_id = 75;
+    Customer customer = 76;
+    repeated google.protobuf.Any discount_applications = 77;
+    repeated google.protobuf.Any fulfillments = 78;
+    repeated Line_items line_items = 79;
+    google.protobuf.Any payment_terms = 80;
+    repeated google.protobuf.Any refunds = 81;
+    repeated google.protobuf.Any shipping_lines = 82;
+}
+
+message ShopifyResponse {
+    string status = 1;
+}
+
+message ShopifyOrdersRedact {
+        int64 shop_id = 1;
+        google.protobuf.Any customer_id = 2;
+        string shop_domain = 3;
+        repeated int64 orders_to_redact = 4;
+}
+
+message ShopifyDataRequest {
+    string shop_domain = 1;
+    int64 shop_id = 2;
+    google.protobuf.Any customer_id = 3;
+    repeated int64 requested_orders = 4;
+    int64 data_request_id = 5;
+}
+
+message ShopifyDataResponse {
+
+    message Addresses {
+        string address1 = 1;
+        google.protobuf.Any address2 = 2;
+        string city = 3;
+        google.protobuf.Any company = 4;
+        string country = 5;
+        string country_code = 6;
+        string country_name = 7;
+        int64 customer_id = 8;
+        bool default = 9;
+        string first_name = 10;
+        int64 id = 11;
+        string last_name = 12;
+        string name = 13;
+        string phone = 14;
+        string province = 15;
+        string province_code = 16;
+        string zip = 17;
+    }
+    message Default_address {
+        string address1 = 1;
+        google.protobuf.Any address2 = 2;
+        string city = 3;
+        google.protobuf.Any company = 4;
+        string country = 5;
+        string country_code = 6;
+        string country_name = 7;
+        int64 customer_id = 8;
+        bool default = 9;
+        string first_name = 10;
+        int64 id = 11;
+        string last_name = 12;
+        string name = 13;
+        string phone = 14;
+        string province = 15;
+        string province_code = 16;
+        string zip = 17;
+    }
+
+    message Email_marketing_consent {
+        google.protobuf.Any consent_collected_from = 1;
+        google.protobuf.Any consent_updated_at = 2;
+        string opt_in_level = 3;
+        string state = 4;
+    }
+
+    message Sms_marketing_consent {
+        string consent_collected_from = 1;
+        google.protobuf.Any consent_updated_at = 2;
+        string opt_in_level = 3;
+        string state = 4;
+    }
+
+    message Contacts {
+        bool accepts_marketing = 1;
+        google.protobuf.Timestamp accepts_marketing_updated_at = 2;
+        repeated Addresses addresses = 3;
+        string admin_graphql_api_id = 4;
+        google.protobuf.Timestamp created_at = 5;
+        string currency = 6;
+        repeated ShopifyOrder customer_orders = 8;
+        Default_address default_address = 9;
+        string email = 10;
+        Email_marketing_consent email_marketing_consent = 11;
+        string first_name = 12;
+        int64 id = 13;
+        string last_name = 14;
+        google.protobuf.Any last_order_id = 15;
+        google.protobuf.Any last_order_name = 16;
+        google.protobuf.Any marketing_opt_in_level = 17;
+        google.protobuf.Any multipass_identifier = 18;
+        google.protobuf.Any note = 19;
+        int64 orders_count = 20;
+        string phone = 21;
+        Sms_marketing_consent sms_marketing_consent = 22;
+        string state = 23;
+        string tags = 24;
+        bool tax_exempt = 25;
+        repeated google.protobuf.Any tax_exemptions = 26;
+        string total_spent = 27;
+        google.protobuf.Timestamp updated_at = 28;
+        bool verified_email = 29;
+    }
+
+    string status = 1;
+    repeated Contacts contacts = 2;
+}
